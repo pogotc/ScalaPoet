@@ -1,0 +1,5 @@
+package scalapoet
+
+class Poet {
+
+}
