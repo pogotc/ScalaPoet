@@ -5,3 +5,5 @@ libraryDependencies += "junit" % "junit" % "4.10" % "test"
 libraryDependencies +=  "org.scalaj" %% "scalaj-http" % "1.1.4"
 
 libraryDependencies += "io.spray" %%  "spray-json" % "1.3.1"
+
+mainClass in assembly := Some("scalapoet.ScalaPoet")
