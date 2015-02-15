@@ -3,31 +3,37 @@ package scalapoet
 import java.util.Random
 
 class PoetParser(input: String) {
-
+  val sanitisedInput = input.replaceAll("(RT )?@\\w+:?", "")
   val suffixMapper = new SuffixMapper
-  val wordListWithPunctuation = input.replaceAll("\n", " ").split(" ").toList
-  val wordListWithoutPunctuation = createTextList
+  val wordListWithPunctuation = sanitisedInput.replaceAll("\n", " ").split(" ").toList
+  val wordListWithoutPunctuation = getTextList
   val rand = new Random(System.currentTimeMillis());
 
-  def createTextList(): List[String] = {
+  def getTextList(): List[String] = {
     val charsToIgnore = "!,.?".toSet
-    input.filterNot(charsToIgnore)
+    sanitisedInput.filterNot(charsToIgnore)
       .replaceAll("\n", " ")
       .split(" ")
       .toList
   }
 
-  def createSuffixMap(): Map[String, List[String]] = suffixMapper.map(createTextList())
+  def createSuffixMap(): Map[String, List[String]] = suffixMapper.map(getTextList())
 
   def getContextForWord(word: String): String = {
-    val wordOccurrences = allOccurrencesOf(wordListWithoutPunctuation, word, 1)
+    val wordOccurrences = allOccurrencesOf(wordListWithoutPunctuation, word, 0)
     val wordPos = wordOccurrences(rand.nextInt(wordOccurrences.length))
     val line = wordListWithPunctuation.slice(wordPos - 4, wordPos + 1).mkString(" ")
 
     return formatLine(line)
   }
 
-  private def formatLine(line: String): String = line(0).toUpper + line.substring(1)
+  private def formatLine(line: String): String = {
+    val santisedLine = line.replaceAll("http://[^ ]+", "").
+    						replaceAll("#[^ ]+", "").
+    						replaceAll("\\s{2,}", " ").
+    						replaceAll("^ ", "")
+    santisedLine(0).toUpper + santisedLine.substring(1)
+  }
 
   private def allOccurrencesOf(input: List[String], txt: String, from: Int): List[Int] = {
     val idx = input.indexOf(txt, from)

@@ -13,7 +13,7 @@ class PoetParserSuite extends FunSuite {
     val poetParser = new PoetParser(input)
     val output = List("this", "is", "a", "test")
 
-    assert(poetParser.createTextList() === output)
+    assert(poetParser.getTextList() === output)
   }
 
   test("it ignores punctuation") {
@@ -21,7 +21,7 @@ class PoetParserSuite extends FunSuite {
     val poetParser = new PoetParser(input)
     val output = List("this", "is", "a", "test")
 
-    assert(poetParser.createTextList() === output)
+    assert(poetParser.getTextList() === output)
   }
 
   test("it splits across multiple lines") {
@@ -29,7 +29,7 @@ class PoetParserSuite extends FunSuite {
     val poetParser = new PoetParser(input)
     val output = List("this", "is", "a", "test")
 
-    assert(poetParser.createTextList() === output)
+    assert(poetParser.getTextList() === output)
   }
 
   test("it can create a suffix map from an input string") {
@@ -49,17 +49,26 @@ class PoetParserSuite extends FunSuite {
     assert(poetParser.getContextForWord("explanation") === output)
   }
 
+  test("it just returns the word if there are no words before the word we're looking for") {
+    val input = "band is unrelated"
+    val output = "Band"
+
+    val poetParser = new PoetParser(input)
+    
+    assert(poetParser.getContextForWord("band") === output)
+  }
+
   test("it can retrieve the context for a word that appears multiple times") {
     val input = "This is some info about the band and this is unrelated to the band"
     val poetParser = new PoetParser(input)
-    
+
     val possibleOutput1 = "Some info about the band"
-    val possibleOutput2 = "Is unrelated to the band"  
-      
+    val possibleOutput2 = "Is unrelated to the band"
+
     var foundOne = false
     var foundTwo = false
-    
-    for(x <- 1 to 10) {
+
+    for (x <- 1 to 10) {
       val output = poetParser.getContextForWord("band")
       if (output == possibleOutput1) {
         foundOne = true

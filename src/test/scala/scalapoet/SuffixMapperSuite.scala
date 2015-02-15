@@ -31,4 +31,11 @@ class SuffixMapperSuite extends FunSuite {
     val output = Map("and" -> List("band", "bland"), "ation" -> List("information", "explanation"))
     assert(suffixMapper.map(input) === output)
   }
+
+  test("Does not count words multiple times") {
+    val input = List("band", "band", "bland");
+    val output = Map("and" -> List("band", "bland"))
+
+    assert(suffixMapper.map(input) === output)
+  }
 }
