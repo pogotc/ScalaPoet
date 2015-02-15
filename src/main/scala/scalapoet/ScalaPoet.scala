@@ -6,9 +6,10 @@ object ScalaPoet {
 
   def main(args: Array[String]): Unit = {
     
-    val client = new TwitterClient("", "")
+    val config = PoetConfigReader("scalapoet.json").getConfig
     
-    val timeline = client.getTimelineFor("pogotc")
+    val client = new TwitterClient(config.consumerKey, config.consumerSecretKey)
+    val timeline = client.getTimelineFor(args(0))
     val allTweets = for(tweets <- timeline.items) yield tweets.text
     val poet = new Poet()
     val poem = poet.writePoem(allTweets.mkString("\n"))
